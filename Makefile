@@ -1,6 +1,10 @@
 .PHONY: run
 run:
-	@cabal v2-run
+	cabal v2-run htuntap -- --help
+
+.PHONY: install
+install:
+	cabal v2-install htuntap
 
 .PHONY: build
 build:

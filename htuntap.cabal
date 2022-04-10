@@ -57,15 +57,18 @@ executable htuntap
   main-is:             Main.hs
 
   -- Modules included in this executable, other than Main.
-  -- other-modules:
+  other-modules: 
+    CLI
+    , Paths_htuntap
 
   -- LANGUAGE extensions used by modules in this package.
-  -- other-extensions:
+  other-extensions:
 
   -- Other library packages from which modules are imported.
   build-depends:
     base >=4.12 && <4.13
     , network >=3.1.2 && <4
+    , optparse-applicative >=0.17
 
   -- Base language which the package is written in.
   default-language:    Haskell2010

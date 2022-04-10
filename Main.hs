@@ -1,4 +1,9 @@
 module Main where
 
+import Options.Applicative
+import CLI
+
 main :: IO ()
-main = putStrLn "Hello, Haskell!"
+main = do
+  r <- customExecParser (prefs helpShowGlobals) parserInfo
+  print r
