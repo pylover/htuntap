@@ -1,6 +1,10 @@
-.PHONY: run
-run:
-	cabal v2-run htuntap -- --help
+.PHONY: run-server
+run-server:
+	cabal v2-run htuntap -- serve
+
+.PHONY: run-client
+run-client:
+	cabal v2-run htuntap -- connect
 
 .PHONY: install
 install:
