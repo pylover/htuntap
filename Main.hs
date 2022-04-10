@@ -7,6 +7,7 @@ import App
 main :: IO ()
 main = do 
     args <- parseArguments
+    print $ app args
     run $ app args
 
 run :: App -> IO()

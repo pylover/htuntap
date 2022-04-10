@@ -9,11 +9,16 @@ import Data.Version (showVersion)
 parseArguments :: IO Args
 parseArguments = customExecParser (prefs helpShowGlobals) parserInfo
 
+type Host = String
+type Bind = String
+type Port = Integer
+
 data Args = Args CommonOpts Command
   deriving Show
 
 data CommonOpts = CommonOpts
-  { optVerbosity :: Integer }
+  { verbosity :: Integer
+  , port :: Port }
   deriving Show
 
 data Command
@@ -22,13 +27,11 @@ data Command
   deriving Show
 
 data ServeOpts = ServeOpts
-  { instReserve :: Bool
-  , instForce :: Bool }
+  { bind :: Bind }
   deriving Show
 
 data ConnectOpts = ConnectOpts
-  { foo :: Bool
-  , bar :: Bool }
+  { host :: Host }
   deriving Show
 
 versionParser :: Parser (a -> a)
@@ -50,8 +53,14 @@ commonOpts = CommonOpts
       ( short 'v'
      <> long "verbose"
      <> metavar "LEVEL"
-     <> help "Set verbosity to LEVEL"
-     <> value 0 )
+     <> help "Set verbosity to LEVEL, 0..4, default: 2"
+     <> value 2 )
+  <*> option auto 
+      ( short 'p'
+     <> long "port"
+     <> metavar "PORT"
+     <> help "Port number: 1..65535, default: 5671"
+     <> value 5671 )
 
 serveParser :: Parser Command
 serveParser = runA $ proc () -> do
@@ -59,20 +68,12 @@ serveParser = runA $ proc () -> do
   returnA -< Serve s
 
 serveOpts :: Parser ServeOpts
-serveOpts = runA $ proc () -> do
-  reinst <- asA (switch (long "reserve")) -< ()
-  force <- asA (switch (long "force-reserve")) -< ()
-  returnA -< ServeOpts
-             { instReserve = reinst
-             , instForce = force }
+serveOpts = ServeOpts
+  <$> argument str (metavar "ADDRESS")
 
 connectOpts :: Parser ConnectOpts
-connectOpts = runA $ proc () -> do
-  f <- asA (switch (long "foo")) -< ()
-  b <- asA (switch (long "bar")) -< ()
-  returnA -< ConnectOpts
-             { foo = f
-             , bar = b }
+connectOpts = ConnectOpts 
+  <$> argument str (metavar "HOSTNAME")
 
 connectParser :: Parser Command
 connectParser = runA $ proc () -> do
