@@ -6,11 +6,14 @@ import Options.Applicative.Arrows
 import Paths_htuntap (version)
 import Data.Version (showVersion)
 
+parseArguments :: IO Args
+parseArguments = customExecParser (prefs helpShowGlobals) parserInfo
+
 data Args = Args CommonOpts Command
   deriving Show
 
 data CommonOpts = CommonOpts
-  { optVerbosity :: Int }
+  { optVerbosity :: Integer }
   deriving Show
 
 data Command
@@ -75,7 +78,6 @@ connectParser :: Parser Command
 connectParser = runA $ proc () -> do
   c <- asA connectOpts -< ()
   returnA -< Connect c
-
 
 parserInfo :: ParserInfo Args
 parserInfo = info parser ( progDesc "Multiprotocol tunnel" )

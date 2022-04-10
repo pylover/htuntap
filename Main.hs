@@ -1,23 +1,20 @@
 module Main where
 
-import Options.Applicative
+import Logging
 import CLI
+import App
 
 main :: IO ()
-main = do
-  r <- customExecParser (prefs helpShowGlobals) parserInfo
-  run r
+main = do 
+    args <- parseArguments
+    run $ app args
 
-run :: Args -> IO()
-run (Args c (Serve o)) = serverMain c o
-run (Args c (Connect o)) = clientMain c o
+run :: App -> IO()
+run (Server logger bind port) = serverMain logger bind port
+run (Client logger host port) = clientMain logger host port
 
-serverMain :: CommonOpts -> ServeOpts -> IO()
-serverMain c o = do
-  print c
-  print o
+serverMain :: Logger -> Bind -> Port -> IO ()
+serverMain l b p = print "server"
 
-clientMain :: CommonOpts -> ConnectOpts -> IO()
-clientMain c o = do
-  print c
-  print o
+clientMain :: Logger -> Host -> Port -> IO ()
+clientMain l b p = print "client"
