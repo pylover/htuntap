@@ -46,7 +46,6 @@ build-type:          Simple
 extra-source-files:  
   CHANGELOG.md
   , README.md
-  , c/help.h
 
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
@@ -62,36 +61,22 @@ executable htuntap
     , CLI
     , Logging
     , App
+    , TunTap
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
   build-depends:
-    base >=4.12 && <4.13
-    , network >=3.1.2 && <4
-    , optparse-applicative >=0.17
+    base >= 4.12 && < 4.13
+    , network >= 3.1.2 && < 4
+    , optparse-applicative >= 0.17
+    , bytestring >= 0.11.3
+    , unix >= 2.7.2.2
 
   -- Base language which the package is written in.
   default-language:    Haskell2010
 
   ghc-options:        -Wall
   cc-options:         -Wall
-
-  if os(mingw32)
-    c-sources:          c/help-win.c
-    extra-libraries:    Iphlpapi, ws2_32
-    cc-options:         -D MINGW32
-    cpp-options:        -DCALLCONV=stdcall
-
-  if os(linux)
-    build-depends:      unix >= 2.3.0.0
-    c-sources:          c/help-linux.c
-    cc-options:         -D LINUX
-    cpp-options:        -DCALLCONV=ccall
-
-  if os(darwin) || os(freebsd)
-    build-depends:      unix >= 2.3.0.0
-    c-sources:          c/help-bsd.c
-    cc-options:         -D BSD
-    cpp-options:        -DCALLCONV=ccall
+  c-sources:          tuntap.c

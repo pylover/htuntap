@@ -3,6 +3,7 @@ module Main where
 import Logging
 import CLI
 import App
+import TunTap
 
 main :: IO ()
 main = do 
