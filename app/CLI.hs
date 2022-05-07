@@ -6,40 +6,11 @@ import Options.Applicative.Arrows
 import Paths_htuntap (version)
 import Data.Version (showVersion)
 
+import Options
 
-parseArguments :: IO Args
+
+parseArguments :: IO Options
 parseArguments = customExecParser (prefs helpShowGlobals) parserInfo
-
-
-type Host = String
-type Bind = String
-type Port = Integer
-
-
-data Args = Args CommonOpts Command
-  deriving Show
-
-
-data CommonOpts = CommonOpts
-  { verbosity :: Integer
-  , port :: Port }
-  deriving Show
-
-
-data Command
-  = Serve ServeOpts
-  | Connect ConnectOpts
-  deriving Show
-
-
-data ServeOpts = ServeOpts
-  { bind :: Bind }
-  deriving Show
-
-
-data ConnectOpts = ConnectOpts
-  { host :: Host }
-  deriving Show
 
 
 versionParser :: Parser (a -> a)
@@ -48,13 +19,13 @@ versionParser = infoOption (showVersion version)
   <> help "Print version information" )
 
 
-parser :: Parser Args
+parser :: Parser Options
 parser = runA $ proc () -> do
   opts <- asA commonOpts -< ()
   cmds <- (asA . hsubparser)
      ( command "serve" (info serveParser (progDesc "Server Mode"))
     <> command "connect" (info connectParser (progDesc "Client Mode"))) -< ()
-  A versionParser >>> A helper -< Args opts cmds
+  A versionParser >>> A helper -< Options opts cmds
 
 
 commonOpts :: Parser CommonOpts
@@ -80,7 +51,10 @@ serveParser = runA $ proc () -> do
 
 
 serveOpts :: Parser ServeOpts
-serveOpts = ServeOpts <$> argument str (metavar "ADDRESS")
+serveOpts = ServeOpts 
+  <$> argument str 
+      ( metavar "ADDRESS"
+     <> value "localhost" )
 
 
 connectOpts :: Parser ConnectOpts
@@ -93,5 +67,5 @@ connectParser = runA $ proc () -> do
   returnA -< Connect c
 
 
-parserInfo :: ParserInfo Args
+parserInfo :: ParserInfo Options
 parserInfo = info parser ( progDesc "Multiprotocol tunnel" )

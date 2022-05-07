@@ -1,7 +1,10 @@
 module Main where
 
+
 import Logging
+import Options
 import CLI
+import Server
 
 
 data App = Server Logger Bind Port
@@ -9,9 +12,9 @@ data App = Server Logger Bind Port
   deriving (Show)
 
 
-app :: Args -> App
-app (Args (CommonOpts l p) (Serve (ServeOpts b))) = Server (Logger l) b p
-app (Args (CommonOpts l p) (Connect (ConnectOpts h))) = Client (Logger l) h p
+app :: Options -> App
+app (Options (CommonOpts l p) (Serve (ServeOpts b))) = Server (Logger l) b p
+app (Options (CommonOpts l p) (Connect (ConnectOpts h))) = Client (Logger l) h p
 
 
 main :: IO ()
@@ -24,10 +27,6 @@ main = do
 run :: App -> IO()
 run (Server logger bind port) = serverMain logger bind port
 run (Client logger host port) = clientMain logger host port
-
-
-serverMain :: Logger -> Bind -> Port -> IO ()
-serverMain l b p = print "server"
 
 
 clientMain :: Logger -> Host -> Port -> IO ()
