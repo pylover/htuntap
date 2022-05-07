@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Logging
   other-modules:
       Paths_htuntap
   hs-source-dirs:
@@ -34,9 +35,10 @@ library
       base >=4.7 && <5
   default-language: Haskell2010
 
-executable htuntap-exe
+executable htuntap
   main-is: Main.hs
   other-modules:
+      CLI
       Paths_htuntap
   hs-source-dirs:
       app
@@ -44,6 +46,7 @@ executable htuntap-exe
   build-depends:
       base >=4.7 && <5
     , htuntap
+    , optparse-applicative
   default-language: Haskell2010
 
 test-suite htuntap-test
